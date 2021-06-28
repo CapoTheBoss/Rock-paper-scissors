@@ -1,0 +1,5 @@
+AUTHOR: Julien de la Bruère-Terreault (drgfreeman@tuta.io)
+
+LICENSE: CC-BY-SA 4.0
+
+
