@@ -2,13 +2,8 @@ import numpy as np
 import matplotlib.pyplot as plt
 import pvml
 import os
-import warnings
 
-warnings.simplefilter(action='ignore', category=FutureWarning)
-
-# get image test name in order to find the worst errors
-
-classes = os.listdir("2021-07-09-rock-paper-scissors/test")
+classes = os.listdir("2021-07-09-rock-paper-scissors/validation")
 classes.sort()
 
 def img_test_name(path):
@@ -21,7 +16,11 @@ def img_test_name(path):
 	return img_test
 
 
-#test_edge_plus_colorHist_mu_sigma
+#test_edge_plus_colorHist_mu_sigma --> this is the test file for low level features
+#train_edge_plus_colorHist_mu_sigma --> this is the train file for low level features
+
+#test_neural_features.txt.gz --> this is the test file for neural features
+#train_neural_features.txt.gz --> this is the train file for neural features
 
 img_test = img_test_name("2021-07-09-rock-paper-scissors/test")
 
@@ -34,23 +33,10 @@ X_test = data[:,:-1]
 Y_test = data[:,-1].astype(int)
 
 nclasses = Y_train.max() + 1
-classes = os.listdir("2021-07-09-rock-paper-scissors/test")
-classes.sort()
 
-lr = 3e-2
-regolarizz = 0
-steps = 1000
-
-'''
-w,b=pvml.logreg_train(X_train,Y_train,regolarizz,lr,steps)
-label,logit = pvml.logreg_inference(X_test,w,b)
-Predictions= (logit>0.5)
-accuracy=(Y_test==Predictions).mean()
-print(accuracy)
-'''
 mlp = pvml.MLP([X_train.shape[1],nclasses])
 
-epochs = 1000
+epochs = 3000
 batch_size = 50
 lr = 0.0001
 steps = X_train.shape[0]//batch_size
@@ -64,47 +50,13 @@ for epoch in range (epochs):
 		test_acc = (predictions==Y_test).mean()
 		print(epoch,train_acc*100,test_acc*100)
 
-
 '''
-miss_classified_index = []
-max_prob = 0
+name model 
+mlp
+cnn
 
-w = [Y_test != predictions]
-
-img_test = img_test[w]
-Y_miss = Y_test[w]
-miss_probs = probs[w]
-Y_test_miss = Y_test[w]
-y_pred_miss = predictions[w]
-maxprobs = []
-
-for x in range(miss_probs.shape[0]):
-	max_prob = 0
-	for j in range(miss_probs.shape[1]):
-		if miss_probs[x][j] > max_prob:
-			max_prob = miss_probs[x][j]
-	maxprobs.append(max_prob)
-
-
-for i in range(len(maxprobs)):
-	if maxprobs[i] > 0.95:
-		print("real form :",classes[Y_test_miss[i]]," predicted form :",classes[y_pred_miss[i]]," probability = ",maxprobs[i]*100," see image = ",img_test[i])
-
-
-
-print(np.bincount(Y_miss))
+mlp_128 for 1 hidden layer with 128 neurons
+cnn_128
 '''
-cm = np.zeros((nclasses,nclasses))
-for i in range(X_test.shape[0]):
-		cm[Y_test[i],predictions[i]] += 1
 
-cm = cm / cm.sum(1, keepdims=True)
-plt.imshow(cm)
-for i in range(nclasses):
-	for j in range(nclasses):
-		plt.text(j,i,int(100*cm[i,j]),color="red",size=12)
-plt.xticks(range(nclasses),classes[:],rotation=90)
-plt.yticks(range(nclasses),classes[:])
-plt.show()
-
-mlp.save("mlp.npz")
+mlp.save("models/mlp.npz") # --> uncomment if you want to save the model

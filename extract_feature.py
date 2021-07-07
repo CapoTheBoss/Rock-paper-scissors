@@ -34,9 +34,11 @@ def mean_std_norm(X, mu ,sigma):
 
 '''
 Low lever feature function :
-edge_direction_histogram
-cooccurrence_matrix
-rgb_cooccurrence_matrix
+
+- edge_direction_histogram
+- cooccurrence_matrix
+- rgb_cooccurrence_matrix
+- color_histogram
 
 '''
 def process_directory(path):
@@ -51,13 +53,13 @@ def process_directory(path):
 			image = image/255
 			
 			features1 = image_features.edge_direction_histogram(image)
-			features2 = image_features.color_histogram(image)
+			features2 = image_features.color_histogram(image) # --> comment if you want to test only 1 llf at time
 
 			features1 = features1.reshape(-1)
-			features2 = features2.reshape(-1)
+			features2 = features2.reshape(-1) # --> comment if you want to test only 1 llf at time
 			
-			#conc_features = features1
-			conc_features = np.concatenate((features1,features2))
+			#conc_features = features1 # --> uncomment if you want to test only 1 llf at time
+			conc_features = np.concatenate((features1,features2)) # --> comment if you want to test only 1 llf at time
 
 			all_features.append(conc_features)
 			all_labels.append(class_label)

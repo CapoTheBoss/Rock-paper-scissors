@@ -30,24 +30,26 @@ def process_directory(path , net , level):
 			all_features.append(features)
 			all_labels.append(class_label)
 		class_label += 1
-	np.savez("data/img_test.npz",images)
+	np.savez("data/img_val.npz",images)
 	X = np.stack(all_features,0)
 	Y = np.array(all_labels)
 	return X,Y
 
 net= pvml.CNN.load("pvmlnet.npz")
-'''
+
+# Train
 X,Y = process_directory("2021-07-09-rock-paper-scissors/train", net , 3)
 print("train",X.shape,Y.shape)
 data = np.concatenate([X,Y[:,None]],1)
 np.savetxt("data/train_neural_features.txt.gz", data)
-'''
 
+# Test
 X,Y = process_directory("2021-07-09-rock-paper-scissors/test", net , 3)
 print("test",X.shape,Y.shape)
 data = np.concatenate([X,Y[:,None]],1)
 np.savetxt("data/test_neural_features.txt.gz", data)
 
+# Validation
 X,Y = process_directory("2021-07-09-rock-paper-scissors/validation", net , 3)
 print("validation",X.shape,Y.shape)
 data = np.concatenate([X,Y[:,None]],1)
